@@ -1,13 +1,7 @@
 package fi.academy.learningdiary;
 
-import org.hibernate.type.ShortType;
-import org.hibernate.type.descriptor.sql.SmallIntTypeDescriptor;
-
 import javax.persistence.*;
-
-
 import java.util.Date;
-
 import static javax.persistence.GenerationType.SEQUENCE;
 
 @Entity

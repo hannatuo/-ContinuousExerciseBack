@@ -6,7 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api")
 public class TopicController {
 @Autowired
@@ -41,14 +44,19 @@ public class TopicController {
     }
 
     @PutMapping("/topics/{id}")
-    public ResponseEntity updateTopic(@PathVariable int id, @RequestBody Topic updatedTopic) {
-        try {
-            topicRepository.save(updatedTopic);
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
-        } catch (ObjectOptimisticLockingFailureException ex) {
-            return new ResponseEntity(HttpStatus.CONFLICT);
+    public ResponseEntity<Topic> updateCheckup(@PathVariable(value = "id") Integer id, @RequestBody Topic topic) {
+        Optional<Topic> c = topicRepository.findById(id);
+        if (c.isPresent()) {
+            Topic toUpdate = c.get();
+            toUpdate.setTitle(topic.getTitle());
+            toUpdate.setDescription(topic.getDescription());
+            toUpdate.setAdditionalsource(topic.getAdditionalsource());
+            toUpdate.setComplete(topic.isComplete());
+            toUpdate.setCreationdate(topic.getCreationdate());
+            toUpdate.setCompletiondate(topic.getCompletiondate());
+            topicRepository.save(toUpdate);
+            return ResponseEntity.ok(toUpdate);
         }
+        return ResponseEntity.notFound().build();
     }
-
-
 }
